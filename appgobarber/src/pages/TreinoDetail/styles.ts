@@ -3,7 +3,7 @@ import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { FlatList } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
-export interface Provider {
+interface Provider {
   id: number;
   user_id: number;
   nome: string;
@@ -23,9 +23,19 @@ export interface Provider {
   updated_at: string;
 }
 
+interface Exercicio {
+  nomeExercicio: string;
+  serie: string;
+  repeticoes: string;
+  cadencia: string;
+  metodo_avancado: string;
+  peso: string;
+}
+
 export const Container = styled.View`
   flex: 1;
 `;
+export const BackButton = styled.TouchableOpacity``;
 
 export const Header = styled.View`
   padding: 20px;
@@ -42,6 +52,7 @@ export const HeaderTitle = styled.Text`
   font-size: 20px;
   font-family: 'RobotoSlab-Regular';
   line-height: 28px;
+  align-items: center;
 `;
 
 export const UserName = styled.Text`
@@ -59,17 +70,7 @@ export const UserAvatar = styled.Image`
 `;
 
 export const ProvidersList = styled(
-  FlatList as new () => FlatList<Provider>,
-).attrs({
-  contentContainerStyle: {
-    paddingTop: 32,
-    paddingBottom: 16,
-    paddingHorizontal: 24,
-  },
-})``;
-
-export const ProvidersListDetail = styled(
-  FlatList as new () => FlatList<Provider.exercicios>,
+  FlatList as new () => FlatList<Exercicio>,
 ).attrs({
   contentContainerStyle: {
     paddingTop: 32,
@@ -85,20 +86,28 @@ export const ProvidersListTitle = styled.Text`
   margin-bottom: 24px;
 `;
 
-export const ProviderContainer = styled(RectButton)`
+export const ProviderContainer = styled.View`
   flex-direction: row;
-  align-items: center;
-  padding: 20px;
-  margin-bottom: 16px;
+  align-items: stretch;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 30px;
+  margin-bottom: 2px;
+
+  margin-left: 20px;
 
   background: #3e3b47;
   border-radius: 10px;
 `;
 
-export const ProviderAvatar = styled.Image`
-  width: 72px;
-  height: 72px;
-  border-radius: 36px;
+export const ExercicioContainer = styled.View`
+  flex-direction: column;
+  background: #3e3b47;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
 
 export const ProviderInfo = styled.View`
@@ -119,11 +128,7 @@ export const ProviderMeta = styled.View`
 `;
 
 export const ProviderMetaText = styled.Text`
-  margin-left: 8px;
+  margin-left: 20px;
   color: #999591;
   font-family: 'RobotoSlab-Regular';
-`;
-
-export const ReloaderButton = styled.TouchableOpacity`
-  left: 50px;
 `;

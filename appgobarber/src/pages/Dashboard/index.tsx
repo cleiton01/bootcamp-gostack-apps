@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
@@ -19,12 +19,40 @@ import {
   ProviderName,
   ProviderMeta,
   ProviderMetaText,
+  ReloaderButton,
 } from './styles';
 
 export interface Provider {
-  id: string;
-  name: string;
-  avatar_url: string;
+  id: number;
+  user_id: number;
+  nome: string;
+  tipo: string;
+  intervalo: string;
+  exercicios: [
+    {
+      nomeExercicio: string;
+      serie: string;
+      repeticoes: string;
+      cadencia: string;
+      metodo_avancado: string;
+      peso: string;
+    },
+  ];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Exercicios {
+  exercicios: [
+    {
+      nomeExercicio: string;
+      serie: string;
+      repeticoes: string;
+      cadencia: string;
+      metodo_avancado: string;
+      peso: string;
+    },
+  ];
 }
 
 const Dashboard: React.FC = () => {
@@ -33,16 +61,26 @@ const Dashboard: React.FC = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
 
   useEffect(() => {
-    api.get('providers').then((response) => {
+    api.get('treino/3').then((response) => {
+      setProviders(response.data);
+    });
+  }, []);
+
+  const reloadPage = useCallback(() => {
+    api.get('treino/3').then((response) => {
       setProviders(response.data);
     });
   }, []);
 
   const handleSelectProvider = useCallback(
-    (providerId: string) => {
-      navigation.navigate('AppointmentDatePicker', { providerId });
+    (providerId: number) => {
+      const exercicios = providers.filter(
+        (provider) => provider.id === providerId,
+      );
+
+      navigation.navigate('TreinoDetail', exercicios[0]);
     },
-    [navigation],
+    [navigation, providers],
   );
 
   return (
@@ -50,33 +88,51 @@ const Dashboard: React.FC = () => {
       <Header>
         <HeaderTitle>
           Bem vindo, {'\n'}
-          <UserName>{user.name}</UserName>
+          <UserName>{user.username}</UserName>
         </HeaderTitle>
+        <>
+          <ReloaderButton onPress={() => reloadPage()}>
+            <Icon name="reload" size={28} color="#ff9000" />
+          </ReloaderButton>
 
-        <ProfileButton onPress={() => navigation.navigate('Profile')}>
-          <UserAvatar source={{ uri: user.avatar_url }} />
-        </ProfileButton>
+          <ProfileButton onPress={signOut}>
+            <Icon name="logout" size={28} color="#ff9000" />
+          </ProfileButton>
+        </>
       </Header>
 
       <ProvidersList
         data={providers}
         keyExtractor={(provider) => provider.id}
-        ListHeaderComponent={
-          <ProvidersListTitle>Cabelereiros</ProvidersListTitle>
-        }
+        ListHeaderComponent={<ProvidersListTitle>Treinos</ProvidersListTitle>}
         renderItem={({ item: provider }) => (
           <ProviderContainer onPress={() => handleSelectProvider(provider.id)}>
-            <ProviderAvatar source={{ uri: provider.avatar_url }} />
-
             <ProviderInfo>
-              <ProviderName>{provider.name}</ProviderName>
+              <ProviderName>
+                <Icon name="dumbbell" size={24} color="#ff9000" />
+                {provider.nome}
+              </ProviderName>
               <ProviderMeta>
-                <Icon name="calendar" size={14} color="#ff9000" />
-                <ProviderMetaText>Segunda à sexta</ProviderMetaText>
+                <ProviderMetaText>Tipo: {provider.tipo}</ProviderMetaText>
               </ProviderMeta>
+            </ProviderInfo>
+          </ProviderContainer>
+        )}
+      />
+
+      <ProvidersList
+        data={providers}
+        keyExtractor={(provider) => provider.id}
+        ListHeaderComponent={<ProvidersListTitle>Treinos</ProvidersListTitle>}
+        renderItem={({ item: provider }) => (
+          <ProviderContainer onPress={() => handleSelectProvider(provider.id)}>
+            <ProviderInfo>
+              <ProviderName>
+                <Icon name="dumbbell" size={24} color="#ff9000" />
+                {provider.nome}
+              </ProviderName>
               <ProviderMeta>
-                <Icon name="clock" size={14} color="#ff9000" />
-                <ProviderMetaText>8h às 18h</ProviderMetaText>
+                <ProviderMetaText>Tipo: {provider.tipo}</ProviderMetaText>
               </ProviderMeta>
             </ProviderInfo>
           </ProviderContainer>

@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import AppointmentDatePicker from '../pages/AppointmentDatePicker';
 import AppointmentCreated from '../pages/AppointmentCreated';
+import TreinoDetail from '../pages/TreinoDetail';
 
 const App = createStackNavigator();
 
@@ -22,6 +23,7 @@ const AppRoutes: React.FC = () => (
       component={AppointmentDatePicker}
     />
     <App.Screen name="AppointmentCreated" component={AppointmentCreated} />
+    <App.Screen name="TreinoDetail" component={TreinoDetail} />
   </App.Navigator>
 );
 
